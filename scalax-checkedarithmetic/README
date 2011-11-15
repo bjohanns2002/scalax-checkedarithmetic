@@ -1,0 +1,86 @@
+
+=== What's this? ===
+
+This is a simple source distribution of an integral type checked arithmetic for scala 2.9.x
+
+=== Version ===
+
+version = 0.1
+
+
+
+=== How to build ===
+
+The most simple approach is to include the source file CheckedArithmetic.scala into your project
+source scope and build it along with your project sources. The source file is self contained.
+
+Or fork & build it and add the project as dependend project to your project in eclipse. 
+This retains the ability to update via git.
+
+
+
+=== Distribution ===
+
+Because of it's (very) small size there is only this simple source distribution. Nothing else.
+
+
+
+=== How to use ===
+
+import de.bjos.scalax.checkedarithmetic.ReportExceptor
+import de.bjos.scalax.checkedarithmetic.CheckedArithmetic
+
+object <your calculation object> {
+
+   private val checked = new CheckedArithmetic with ReportExceptor
+   // or private val checked = new CheckedArithmetic{}
+
+   import checked._   // bring the implicits in scope
+
+   val a = 10 *? 1000
+   val b = 100 -? 5 *? 5L
+   val c = (5 +? 5) *? 20 /? 10 -? 3
+   
+}
+
+
+
+=== Status ===
+
+This is work in (slow) progress!
+Be prepared for nasty bugs, sudden changes or silent removal.
+
+
+
+=== Disclaimer & Conditions ===
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are met:
+
+    - Redistributions of source code must retain
+      this list of conditions and the following disclaimer.
+    - Redistributions in binary form must reproduce
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    - Neither the name of the author nor the names of contributors 
+      may be used to endorse or promote products derived from 
+      this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, 
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+This is non profit open source code which is neither expected to be
+error free nor intended for use in mission critical systems.
+
+By using this software in source or binary format you agree to the
+conditions and disclaimer above.
+

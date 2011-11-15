@@ -1,0 +1,91 @@
+/**
+ * provides checked arithmetics by enriching the integral data types
+ * with checked versions of the basic arithmetic operators.
+ * 
+ * The "checked" operators +?, -?, *? and /? share the same priority
+ * as their unchecked counterparts and can be used as drop in replacements.
+ * 
+ * They differ however in their behaviour:
+ * 
+ * +?, -? and *? return the result in the range of the widest operand.
+ * I.e. 10L +? 10 = 20L   and 10 +? 10L = 20L
+ * 
+ * /? returns the result in the range of the dividend.
+ * 
+ * Each of the checked operators checks if the result can be savely
+ * cast into the defined result range and raises an arithmetic exception
+ * when not. The exact flavour of exception can be customized by
+ * overriding the overflow method.
+ * 
+ * The default exception is ArithmeticException with ControlThrowable
+ * 
+ * Basic usage:
+ *
+ *   private val checked = new CheckedArithmetic{} // standard overflow method
+ *   import checked._                              // activate implicits
+ *
+ *   val a = 10 *? 1000
+ *   val b = 100 -? 5 *? 5L
+ *   val c = (5 +? 5) *? 20 /? 10 -? 3
+ *
+ * 
+ * Conversions:
+ *
+ *   to narrow an integral type in a checked fashion CheckedArithmetic provides several
+ *   as<Type> converter. They operate exactly as the to<Type> converter however they
+ *   check if the narrowed type is able to contain the original value or throw an
+ *   ArithmeticException when not.
+ *
+ *   val a: Short = 1000L.asShort 
+ *
+ *
+ * By using
+ *
+ *   private val checked = new CheckedArithmetic with ReportExceptor
+ *
+ * the default overflow behaviour is changed thus that it
+ * provides ArithmeticExceptions with filled in partially erased stack trace
+ * (to hide the "lower level" parts) and offending arguments along with
+ * the intended target value range
+ * 
+ * Usage:
+ * In client code:
+ * 
+ *   private val checked = new CheckedArithmetic with ReportExceptor
+ *   import checked._
+ *
+ *
+ * Current status:
+ *
+ *   * work in (slow) progress
+ *   * largely untested (!) especially the Long checks may be faulty 
+ *   * needs some real test coverage
+ *   
+ * Known issues:
+ *   
+ *   a) unary negation is not supported (val a = -?10)
+ *      impact: negating the result of a calculation will be unchecked
+ *      error : when the result equals <range>.MinValue the negation will silently overflow
+ *      cure  : negate by subtracting from 0 (val a = 0 -? 10)
+ *
+ *   b) slows down most calculations by a factor of rougly 2 (a little more)
+ *   
+ *   c) Long multiplication has a worse time profile with a slowdown of ~10
+ *      cause : the long division used to check for overflows is slow
+ *      cure  : non yet (some bright ideas - anybody?)
+ *   
+ *   d) debugging is somewhat tedious due to inlining
+ *   
+ *   e) just tested and profiled on sun jre 1.6 other jre might profile far worse
+ *   
+ *   
+ * Other things:
+ *
+ * Well this looks not DRY at all...
+ *   
+ *   I know - it was once, using type classes as implementers for the generic
+ *   "front end".
+ *   This approach was ~ 10x slower than the current implementation.
+ *   While I agree that performance is not always an argument I wasn't
+ *   willing to pay that price for overflow checking.
+ */
